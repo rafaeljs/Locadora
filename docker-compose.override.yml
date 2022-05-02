@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  locadora.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

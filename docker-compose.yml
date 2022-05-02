@@ -1,0 +1,37 @@
+version: '3.4'
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports: 
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  locadora.api:
+    image: ${DOCKER_REGISTRY-}locadoraapi
+    build:
+      context: .
+      dockerfile: Locadora.API/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+;
+    ports:
+      - 7000:80
+    depends_on:
+        db:
+            condition: service_healthy
